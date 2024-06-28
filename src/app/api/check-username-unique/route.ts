@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { usernameValidation } from '@/schemas/signUpSchema';
 
 const UsernameQuerySchema = z.object({
-  username: usernameValidation,
+  username: usernameValidation, 
 });
 
 export async function GET(request: Request) {
