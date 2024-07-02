@@ -86,7 +86,7 @@ export async function POST(request: Request) {
         message: "User Registered Successfully.Please verify your email",
       },
       {
-        status: 500,
+        status: 200,
       }
     );
   } catch (error) {

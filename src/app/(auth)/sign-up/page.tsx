@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useDebounceCallback, useDebounceValue } from "usehooks-ts";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 import {
   Form,
@@ -22,14 +23,14 @@ import { signUpSchema } from "@/schemas/signUpSchema";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Link, Loader, Loader2 } from "lucide-react";
+import {  Loader, Loader2 } from "lucide-react";
 
 export default function SignUpForm() {
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const debounced= useDebounceCallback(setUsername, 300);
+  const debounced = useDebounceCallback(setUsername, 300);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -47,17 +48,18 @@ export default function SignUpForm() {
     const checkUsernameUnique = async () => {
       if (username) {
         setIsCheckingUsername(true);
-        setUsernameMessage(""); // Reset message
+        setUsernameMessage("");
         try {
           const response = await axios.get<ApiResponse>(
             `/api/check-username-unique?username=${username}`
           );
-          
-          setUsernameMessage( response.data.message as string);
+
+          setUsernameMessage(response.data.message as string);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           setUsernameMessage(
-            axiosError.response?.data.message ?? "Error checking username"
+            String(axiosError.response?.data.message) ??
+              "Error checking username"
           );
         } finally {
           setIsCheckingUsername(false);
@@ -77,7 +79,7 @@ export default function SignUpForm() {
         description: response.data.message,
       });
 
-      router.replace(`/verify/${username}`);
+      router.replace(`/Verify/${username}`);
 
       setIsSubmitting(false);
     } catch (error) {
@@ -125,11 +127,19 @@ export default function SignUpForm() {
                         debounced(e.target.value);
                       }}
                     />
-                   
                   </FormControl>
-                  {isCheckingUsername && <Loader2 className="animate-spin"/>}
-                  <p className={`text-sm ${usernameMessage==="Username is unique"?'text-green-500':'text-red-500'}`}> test {username}</p>
-                  
+                  {isCheckingUsername && <Loader2 className="animate-spin" />}
+                  <p
+                    className={`text-sm ${
+                      usernameMessage === "Username is unique"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {" "}
+                    test {username}
+                  </p>
+
                   <FormDescription>
                     This is your public display name
                   </FormDescription>
@@ -170,23 +180,23 @@ export default function SignUpForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting}>
-              isSubmitting ?(
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              </>
-              ):('SignUp')
+            <Button className="mt-4" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                </>
+              ) : (
+                "SignUp"
+              )}
             </Button>
           </form>
         </Form>
-        <div className="text-center-mt-4">
+        <div className="text-center mt-4">
           <p>
-            Already a member{""}
-            <Link
-              href="/sign-in"
-              className="text-blue-600 hover:text-blue-800"
-              Sign-in
-            ></Link>
+            Already a member?{' '}
+            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+              Sign in
+            </Link>
           </p>
         </div>
       </div>
