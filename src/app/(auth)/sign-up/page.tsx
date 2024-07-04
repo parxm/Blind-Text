@@ -23,7 +23,7 @@ import { signUpSchema } from "@/schemas/signUpSchema";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import {  Loader, Loader2 } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 
 export default function SignUpForm() {
   const [username, setUsername] = useState("");
@@ -193,7 +193,7 @@ export default function SignUpForm() {
         </Form>
         <div className="text-center mt-4">
           <p>
-            Already a member?{' '}
+            Already a member?{" "}
             <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
               Sign in
             </Link>
