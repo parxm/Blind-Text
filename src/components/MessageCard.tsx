@@ -10,7 +10,8 @@ import {
 
 const MessageCard = () => {
   return (
-    <Card>
+    <>
+    <Card suppressHydrationWarning={true}>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
         <CardDescription>Card Description</CardDescription>
@@ -22,6 +23,7 @@ const MessageCard = () => {
         <p>Card Footer</p>
       </CardFooter>
     </Card>
+    </>
   );
 };
 
