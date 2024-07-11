@@ -20,6 +20,7 @@ export async function POST(request:Response){
             status:200
          })
     } catch (error) {
+      console.log(error)
         
         
     }

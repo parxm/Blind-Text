@@ -41,7 +41,7 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps)  {
     toast({
       title: response.data.message as string,
     });
-    onMessageDelete(message.id);
+    onMessageDelete(message._id as string);
   };
   return (
     <>
