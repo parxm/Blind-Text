@@ -63,7 +63,7 @@ export async function GET(request: Request) {
   await dbConnect();
   const session = await getServerSession(authoptions);
   const user: User = session?.user as User;
-  if (!session || session?.user) {
+  if (!session || !session?.user) {
     return Response.json(
       {
         success: false,
@@ -91,7 +91,7 @@ export async function GET(request: Request) {
     return Response.json({
       success:true,
       message:"Here is your user enjoy haaahahhaha",
-      isAcceptingMessages:user.isAcceptingMessages
+      isAcceptingMessages:founduser.isAcceptingMessage
     },{
       status:200
     })
