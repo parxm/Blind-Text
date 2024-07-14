@@ -10,6 +10,7 @@ import Link from 'next/link'
 
 
 const page = () => {
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-[100dvh] bg-background px-4 py-12 sm:px-6 lg:px-8">
     <div className="max-w-2xl w-full space-y-8">

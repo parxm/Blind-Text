@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   await dbConnect();
   const session = await getServerSession(authoptions);
   const user: User = session?.user as User;
-  if (!session || session?.user) {
+  if (!session ||!session?.user) {
     return Response.json(
       {
         success: false,
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userid,
       {
-        isAcceptingMessage: acceptmessages,
+        isAcceptingMessages: acceptmessages,
       },
       { new: true }
     );
@@ -49,7 +49,6 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
-    console.log("Failed to update user status to accept messages ");
     return Response.json(
       {
         success: false,
@@ -74,9 +73,9 @@ export async function GET(request: Request) {
       }
     );
   }
-  const userid = user._id;
+  
   try {
-    const founduser = await UserModel.findById(userid);
+    const founduser = await UserModel.findById(user._id);
     if (!founduser) {
       return Response.json(
         {
@@ -90,7 +89,6 @@ export async function GET(request: Request) {
     }
     return Response.json({
       success:true,
-      message:"Here is your user enjoy haaahahhaha",
       isAcceptingMessages:founduser.isAcceptingMessage
     },{
       status:200
@@ -104,6 +102,5 @@ export async function GET(request: Request) {
       },
       { status: 500 }
     );
-    
   }
 }

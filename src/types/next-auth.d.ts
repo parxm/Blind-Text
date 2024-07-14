@@ -1,7 +1,7 @@
 import 'next-auth';
 
 declare module 'next-auth' {
-  interface Session {
+  interface session {
     user: {
       _id?: string;
       isVerified?: boolean;
