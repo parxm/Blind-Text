@@ -23,10 +23,10 @@ export const authoptions: NextAuthOptions = {
             ],
           });
           if (!user) {
-            throw new Error("No user find with this email");
+            throw new Error("No user found with this email");
           }
           if (!user.isVerified) {
-            throw new Error("Please verify your account First");
+            throw new Error("Please verify your account first");
           }
 
           const isPasswordCorrect = await bcrypt.compare(
@@ -48,6 +48,9 @@ export const authoptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (token) {
+        if (!session.user) {
+          session.user = {}; // Initialize session.user if it doesn't exist
+        }
         session.user._id = token._id;
         session.user.isVerified = token.isVerified;
         session.user.isAcceptingMessages = token.isAcceptingMessages;

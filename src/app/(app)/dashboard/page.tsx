@@ -110,7 +110,7 @@ function UserDashboard() {
     return <div>Please log in to see your dashboard.</div>;
   }
 
-  const { name: username } = session.user as User;
+  const { name: username } = session.user ;
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
 

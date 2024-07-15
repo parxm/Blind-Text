@@ -62,6 +62,7 @@ export async function GET(request: Request) {
   await dbConnect();
   const session = await getServerSession(authoptions);
   const user: User = session?.user as User;
+  console.log(user._id)
   if (!session || !session?.user) {
     return Response.json(
       {
@@ -75,6 +76,7 @@ export async function GET(request: Request) {
   }
   
   try {
+    
     const founduser = await UserModel.findById(user._id);
     if (!founduser) {
       return Response.json(
