@@ -1,57 +1,121 @@
-"use client"
-import React from 'react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
+"use client";
+import React, { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
+const MessagePage = () => {
+  const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState<string>("");
 
-const handlesuggestmessage=()=>{
+  const initialMessage =
+    "what's your favourite movie || Hello nigga || Where do you see yourself in the next 5 years";
 
-}
+  const handleSuggestMessage = async () => {
+    try {
+      const response = await axios.post("/api/suggest-messages");
+      const messages = response.data.data.split("||");
 
-const messagepage = () => {
+      setSuggestedMessages(messages);
+      toast({
+        title: "Suggested Messages",
+        description: "Fetching messages",
+      });
+    } catch (error) {
+      console.log("Error fetching messages:", error);
+      setError("Unable to fetch messages");
+      toast({
+        title: "Error",
+        description: "Unable to fetch messages",
+      });
+    }
+  };
+
+  const handleSelectMessage = (message: string) => {
+    setInputValue(message);
+  };
+
+  const handleSendMessage=async()=>{
+    
+    try {
+      
+      const response = await axios.post('/api/send-message',{
+        username:,
+        content:inputValue,
+      })
+    } catch (error) {
+      console.log("Error fetching messages:", error);
+      setError("Unable to fetch messages");
+      toast({
+        title: "Error",
+        description: "Unable to fetch messages",
+      });
+      
+    }
+
+  }
+
   return (
     <div className="min-h-screen flex flex-col mx-24">
-    <main className="flex-1 flex justify-center items-center">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Public profile link</CardTitle>
-          <CardDescription>Send a message to the profile owner.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="message">Your message</Label>
-            <Textarea id="message" placeholder="Enter your message" className="min-h-[100px]" />
-          </div>
-          <div className='py-3 items-end'>
-            <Button onClick={handlesuggestmessage}>Suggest Messages</Button>
-          </div>
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Quick messages</div>
-            <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" size="sm">
-                Hi there!
-              </Button>
-              <Button variant="outline" size="sm">
-                Great work!
-              </Button>
-              <Button variant="outline" size="sm">
-                Let's connect
-              </Button>
-              <Button variant="outline" size="sm">
-                Awesome profile
-              </Button>
+      <main className="flex-1 flex justify-center items-center">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Public profile link</CardTitle>
+            <CardDescription>
+              Send a message to the profile owner.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="message">Your message</Label>
+              <Textarea
+                id="message"
+                placeholder="Enter your message"
+                className="min-h-[100px]"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
             </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button className="ml-auto">Send message</Button>
-        </CardFooter>
-      </Card>
-    </main>
-  </div>
-  )
-}
+            <div className="py-3 items-end">
+              <Button onClick={handleSuggestMessage}>Suggest Messages</Button>
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm font-medium">Suggested messages</div>
+              {suggestedMessages.length > 0 && (
+                <div className="grid grid-cols-1 md:justify-start gap-2 md:flex-row flex-col">
+                  {suggestedMessages.map((message, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSelectMessage(message)}
+                    >
+                      {message}
+                    </Button>
+                  ))}
+                </div>
+              )}
+              {error && <div className="text-red-500">{error}</div>}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button  onClick={handleSendMessage}   className="ml-auto">Send message</Button>
+          </CardFooter>
+        </Card>
+      </main>
+    </div>
+  );
+};
 
-export default messagepage
+export default MessagePage;

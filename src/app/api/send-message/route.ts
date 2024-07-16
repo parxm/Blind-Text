@@ -1,10 +1,5 @@
-import { getServerSession } from "next-auth";
-import { authoptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
-import UserModel from "@/model/User";
-import { User } from "next-auth";
-import { Message } from "@/model/User";
-import { date } from "zod";
+import UserModel, { Message } from "@/model/User";
 
 export async function POST(request: Response) {
   await dbConnect();
