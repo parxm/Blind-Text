@@ -2,14 +2,13 @@ import { getServerSession } from "next-auth";
 import { authoptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
-import { User } from "next-auth";
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   await dbConnect();
   const session = await getServerSession(authoptions);
-  const user: User = session?.user as User;
-  if (!session ||!session?.user) {
-    return Response.json(
+  if (!session || !session.user) {
+    return NextResponse.json(
       {
         success: false,
         message: "Not authenticated",
@@ -19,26 +18,26 @@ export async function POST(request: Request) {
       }
     );
   }
-  const userid = user._id;
-  const { acceptmessages } = await request.json();
+  const user = session.user as any;
+  const { acceptMessages } = await request.json();
   try {
     const updatedUser = await UserModel.findByIdAndUpdate(
-      userid,
+      user._id,
       {
-        isAcceptingMessages: acceptmessages,
+        isAcceptingMessage: acceptMessages,
       },
       { new: true }
     );
     if (!updatedUser) {
-      return Response.json(
+      return NextResponse.json(
         {
           success: false,
-          message: "failed to update user status to accept messages",
+          message: "Failed to update user status to accept messages",
         },
         { status: 401 }
       );
     }
-    return Response.json(
+    return NextResponse.json(
       {
         success: true,
         message: "Message acceptance status updated successfully",
@@ -49,22 +48,22 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
-    return Response.json(
+    console.error("Failed to update user status to accept messages:", error);
+    return NextResponse.json(
       {
         success: false,
-        message: "Failed to update user status to accept messages ",
+        message: "Failed to update user status to accept messages",
       },
       { status: 500 }
     );
   }
 }
+
 export async function GET(request: Request) {
   await dbConnect();
   const session = await getServerSession(authoptions);
-  const user: User = session?.user as User;
-  console.log(user._id)
-  if (!session || !session?.user) {
-    return Response.json(
+  if (!session || !session.user) {
+    return NextResponse.json(
       {
         success: false,
         message: "Not authenticated",
@@ -74,12 +73,11 @@ export async function GET(request: Request) {
       }
     );
   }
-  
+  const user = session.user as any;
   try {
-    
-    const founduser = await UserModel.findById(user._id);
-    if (!founduser) {
-      return Response.json(
+    const foundUser = await UserModel.findById(user._id);
+    if (!foundUser) {
+      return NextResponse.json(
         {
           success: false,
           message: "User not found",
@@ -89,18 +87,18 @@ export async function GET(request: Request) {
         }
       );
     }
-    return Response.json({
-      success:true,
-      isAcceptingMessages:founduser.isAcceptingMessage
+    return NextResponse.json({
+      success: true,
+      isAcceptingMessages: foundUser.isAcceptingMessage,
     },{
-      status:200
-    })
+      status: 200
+    });
   } catch (error) {
-    console.log("Failed to update user status to accept messages ");
-    return Response.json(
+    console.error("Error in getting message acceptance status:", error);
+    return NextResponse.json(
       {
         success: false,
-        message: "Error in getting message accept ance status ",
+        message: "Error in getting message acceptance status",
       },
       { status: 500 }
     );

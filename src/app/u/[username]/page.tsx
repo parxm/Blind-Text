@@ -15,6 +15,13 @@ import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 
 const MessagePage = () => {
+  //@ts-ignore
+  const currenturl=window.location.href
+  console.log(currenturl)
+  const parts =currenturl.split('/')
+  const username = parts[parts.length-1]
+  console.log(username)
+ 
   const [suggestedMessages, setSuggestedMessages] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
@@ -51,18 +58,19 @@ const MessagePage = () => {
     try {
       
       const response = await axios.post('/api/send-message',{
-        username:,
+        username:username,
         content:inputValue,
       })
     } catch (error) {
-      console.log("Error fetching messages:", error);
-      setError("Unable to fetch messages");
       toast({
-        title: "Error",
-        description: "Unable to fetch messages",
-      });
-      
+        title:"Unable to send Messages",
+        description:"User Stopped accepting messages for now"
+      })
     }
+    return toast({
+      title:"Message sent successfully"
+    })
+   
 
   }
 
